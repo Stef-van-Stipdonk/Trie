@@ -12,6 +12,8 @@ public class Node
 
     public void Insert(string key)
     {
+        key = key.ToLower();
+        
         var character = key[0];
 
         foreach (var node in _children)
@@ -43,6 +45,8 @@ public class Node
 
     public bool KeyExists(string key)
     {
+        key = key.ToLower();
+        
         if (key.Length == 0)
         {
             return EndOfWord;
