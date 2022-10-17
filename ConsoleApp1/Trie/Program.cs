@@ -7,4 +7,6 @@ var root = new Node();
 root.Insert("te");
 root.Insert("test");
 root.Insert("app");
+
+var result = root.KeyExists("te");
 Console.WriteLine();

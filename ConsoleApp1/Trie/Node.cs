@@ -40,4 +40,27 @@ public class Node
 
         _children[_count - 1].Insert(key[1..]);
     }
+
+    public bool KeyExists(string key)
+    {
+        if (key.Length == 0)
+        {
+            return EndOfWord;
+        }
+        
+        var character = key[0];
+
+        foreach (var node in _children)
+        {
+            if (node == null)
+                break;
+            
+            if (node.Char == character)
+            {
+                return node.KeyExists(key[1..]);
+            }
+        }
+
+        return false;
+    }
 }
