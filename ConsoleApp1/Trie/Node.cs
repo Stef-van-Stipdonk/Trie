@@ -7,8 +7,8 @@ public class Node
     public char? Char;
     public bool EndOfWord = false;
 
-    private Node[] _children = new Node[ALPHABET_SIZE];
-    private int _count = 0;
+    public Node[] _children = new Node[ALPHABET_SIZE];
+    public int _count = 0;
 
     public void Insert(string key)
     {
