@@ -4,74 +4,95 @@ namespace Trie.Test;
 
 public class Tests
 {
+    static readonly int ALPHABET_SIZE = 26;
+
+    
     [Test]
     public void CheckSingleInsert()
     {
         var root = new Node();
         
         root.Insert("test");
-
-        var t1 = root._children[0];
-        var e = t1._children[0];
-        var s = e._children[0];
-        var t2 = s._children[0];
-
-        Assert.That(t1.Char, Is.EqualTo('t'));
-        Assert.That(e.Char, Is.EqualTo('e'));
-        Assert.That(s.Char, Is.EqualTo('s'));
-        Assert.That(t2.Char, Is.EqualTo('t'));
-        Assert.True(t2.EndOfWord);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(root._children['t' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'], Is.Not.Null);
+        });
+        
+        Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'].EndOfWord, Is.True);
     }
-    
+
     [Test]
-    public void CheckDoubleInsert()
+    public void CheckDoubleInsertWithSameText()
     {
         var root = new Node();
         
         root.Insert("test");
-
-        var t1 = root._children[0];
-        var e = t1._children[0];
-        var s = e._children[0];
-        var t2 = s._children[0];
-
-        Assert.That(t1.Char, Is.EqualTo('t'));
-        Assert.False(t1.EndOfWord);
-
-        Assert.That(e.Char, Is.EqualTo('e'));
-        Assert.False(e.EndOfWord);
         
-        Assert.That(s.Char, Is.EqualTo('s'));
-        Assert.False(s.EndOfWord);
-
-        Assert.That(t2.Char, Is.EqualTo('t'));
-        Assert.True(t2.EndOfWord);
+        Assert.Multiple(() =>
+        {
+            Assert.That(root._children['t' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'], Is.Not.Null);
+        });
         
         root.Insert("te");
         
-        Assert.That(t1.Char, Is.EqualTo('t'));
-        Assert.False(t1.EndOfWord);
-
-        Assert.That(e.Char, Is.EqualTo('e'));
-        Assert.True(e.EndOfWord);
-
-        Assert.That(s.Char, Is.EqualTo('s'));
-        Assert.False(s.EndOfWord);
-
-        Assert.That(t2.Char, Is.EqualTo('t'));
-        Assert.True(t2.EndOfWord);
+        Assert.Multiple(() =>
+        {
+            Assert.That(root._children['t' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a'], Is.Not.Null);
+        });
+        
+        Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'].EndOfWord, Is.True);
+        Assert.That(root._children['t' - 'a']._children['e' - 'a'].EndOfWord, Is.True);
     }
 
     [Test]
-    public void SeeIfExists()
+    public void CheckDoubleInsertWithDifferentTest()
     {
         var root = new Node();
         
+        // Insert word test
         root.Insert("test");
 
-        Assert.True(root.KeyExists("test"));
+        // Check if the indexes for "test" exist.
+        Assert.Multiple(() =>
+        {
+            Assert.That(root._children['t' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a'], Is.Not.Null);
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'], Is.Not.Null);
+        });
+        
+        // Check if the last 't' in "test" is marked as EndOfWord.
+        Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'].EndOfWord, Is.True);
+
+        // Check if the indexes for "app" exist.
+        root.Insert("app");
+        
+        // Check if the indexes for "app" exist.
+        Assert.Multiple(() =>
+        {
+            Assert.That(root._children['a' - 'a'], Is.Not.Null);
+            Assert.That(root._children['a' - 'a']._children['p' - 'a'], Is.Not.Null);
+            Assert.That(root._children['a' - 'a']._children['p' - 'a']._children['p' - 'a'], Is.Not.Null);
+        });
+        Assert.Multiple(() =>
+        {
+
+            // Check if the last 't' in "test" is marked as EndOfWord.
+            Assert.That(root._children['t' - 'a']._children['e' - 'a']._children['s' - 'a']._children['t' - 'a'].EndOfWord, Is.True);
+            
+            // Check if the last 'p' in "app" is marked as EndOfWord.
+            Assert.That(root._children['a' - 'a']._children['p' - 'a']._children['p' - 'a'].EndOfWord, Is.True);
+        });
     }
-    
+
     [Test]
     public void SeeIfNotExists()
     {
@@ -79,6 +100,6 @@ public class Tests
         
         root.Insert("test");
 
-        Assert.False(root.KeyExists("app"));
+        Assert.That(root.KeyExists("app"), Is.False);
     }
 }

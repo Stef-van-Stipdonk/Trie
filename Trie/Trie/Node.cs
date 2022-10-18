@@ -4,67 +4,44 @@ public class Node
 {
     static readonly int ALPHABET_SIZE = 26;
 
-    public char? Char;
     public bool EndOfWord = false;
 
-    public Node[] _children = new Node[ALPHABET_SIZE];
-    public int _count = 0;
-
+    public Node?[] _children = new Node[ALPHABET_SIZE];
+    
     public void Insert(string key)
     {
         key = key.ToLower();
         
-        var character = key[0];
-
-        foreach (var node in _children)
+        var currentNode = this;
+     
+        foreach (var character in key)
         {
-            if (node == null) 
-                break;
-
-            if (node.Char != character) 
-                continue;
+            var index = character - 'a';
+            currentNode._children[index] ??= new Node();
             
-            if (key.Length > 1)
-                node.Insert(key[1..]);
-            else
-                node.EndOfWord = true;
-
-            return;
+            currentNode = currentNode._children[index];
         }
-
-        _children[_count++] = new Node()
-        {
-            Char = character,
-            EndOfWord = key.Length == 1
-        };
-
-        if (key.Length == 1) return;
-
-        _children[_count - 1].Insert(key[1..]);
+     
+        // mark last node as leaf
+        currentNode.EndOfWord = true;
     }
-
+    
     public bool KeyExists(string key)
     {
         key = key.ToLower();
-        
-        if (key.Length == 0)
-        {
-            return EndOfWord;
-        }
-        
-        var character = key[0];
 
-        foreach (var node in _children)
+        var currentNode = this;
+     
+        foreach (var character in key)
         {
-            if (node == null)
-                break;
-            
-            if (node.Char == character)
-            {
-                return node.KeyExists(key[1..]);
-            }
+            var index = character - 'a';
+     
+            if (currentNode?._children[index] == null)
+                return false;
+     
+            currentNode = currentNode._children[index];
         }
-
-        return false;
+     
+        return (currentNode.EndOfWord);
     }
 }
